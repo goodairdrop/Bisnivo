@@ -774,18 +774,16 @@ console.log("Bisnivo: Supabase siap digunakan.");
 </div>
 
 <script>
-let transaksiPenjualan = [];
-
-function bukaPenjualan() {
+async function bukaPenjualan() {
   document.getElementById('halamanPenjualan').style.display = 'block';
-  tampilkanPenjualan();
+  await tampilkanPenjualan();
 }
 
 function tutupPenjualan() {
   document.getElementById('halamanPenjualan').style.display = 'none';
 }
 
-function simpanPenjualan() {
+async function simpanPenjualan() {
   const nama = document.getElementById('namaBarang').value.trim();
   const harga = Number(document.getElementById('hargaBarang').value);
   const jumlah = Number(document.getElementById('jumlahBarang').value);
@@ -795,22 +793,80 @@ function simpanPenjualan() {
     return;
   }
 
-  transaksiPenjualan.push({
-    nama: nama,
-    harga: harga,
-    jumlah: jumlah,
-    total: harga * jumlah
-  });
+  const { data: { user }, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !user) {
+    alert('Silakan login terlebih dahulu.');
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from('penjualan')
+    .insert([{
+      user_id: user.id,
+      nama_barang: nama,
+      harga: harga,
+      jumlah: jumlah
+    }]);
+
+  if (error) {
+    alert('Gagal menyimpan penjualan: ' + error.message);
+    return;
+  }
 
   document.getElementById('namaBarang').value = '';
   document.getElementById('hargaBarang').value = '';
   document.getElementById('jumlahBarang').value = '1';
 
-  tampilkanPenjualan();
-  alert('Penjualan berhasil dicatat!');
+  await tampilkanPenjualan();
+  alert('Penjualan berhasil disimpan!');
 }
 
-function tampilkanPenjualan() {
+async function tampilkanPenjualan() {
+  const daftar = document.getElementById('daftarPenjualan');
+  const totalElement = document.getElementById('totalPenjualan');
+
+  daftar.textContent = 'Memuat data penjualan...';
+
+  const { data, error } = await supabaseClient
+    .from('penjualan')
+    .select('id, nama_barang, harga, jumlah, total, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    daftar.textContent = 'Gagal memuat data: ' + error.message;
+    return;
+  }
+
+  daftar.innerHTML = '';
+
+  let totalSemua = 0;
+
+  data.forEach(function(item) {
+    const totalItem = Number(item.total);
+    totalSemua += totalItem;
+
+    const baris = document.createElement('div');
+    baris.style.padding = '10px';
+    baris.style.borderBottom = '1px solid #ddd';
+
+    const nama = document.createElement('strong');
+    nama.textContent = item.nama_barang;
+
+    const rincian = document.createElement('p');
+    rincian.textContent =
+      'Harga: Rp' + Number(item.harga).toLocaleString('id-ID') +
+      ' × ' + item.jumlah +
+      ' | Total: Rp' + totalItem.toLocaleString('id-ID');
+
+    baris.append(nama, rincian);
+    daftar.appendChild(baris);
+  });
+
+  totalElement.textContent =
+    'Total Penjualan: Rp' + totalSemua.toLocaleString('id-ID');
+}
   const daftar = document.getElementById('daftarPenjualan');
   const total = transaksiPenjualan.reduce((sum, item) => sum + item.total, 0);
 
