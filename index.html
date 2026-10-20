@@ -528,5 +528,18 @@
     <p>© 2026 Bisnivo. Semua hak dilindungi.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://tbrlhefbcdgbpprlouoh.supabase.co";
+const SUPABASE_KEY = "sb_publishable_mIQUzTKD8jNYT_yDyWA0aQ_7fHZ_YOz";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+console.log("Bisnivo: Supabase siap digunakan.");
+</script>
 </body>
 </html>
