@@ -708,31 +708,43 @@ btnLogout.addEventListener("click", async () => {
 });
 
 // Perbarui tampilan berdasarkan status login
-async function perbaruiStatusAkun() {
-  const { data } = await supabaseClient.auth.getSession();
-  const sudahLogin = Boolean(data.session);
+function aturTampilanAkun(session) {
+  const sudahLogin = Boolean(session);
 
   btnLogin.style.display = sudahLogin ? "none" : "block";
   btnDaftar.style.display = sudahLogin ? "none" : "block";
   btnLogout.style.display = sudahLogin ? "block" : "none";
 
-  if (sudahLogin) {
-    statusAkun.textContent =
-      "Login sebagai " + data.session.user.email;
+  const dashboard = document.getElementById("dashboard");
+
+  if (dashboard) {
+    dashboard.style.display = sudahLogin ? "block" : "none";
   }
+
+  const hero = document.querySelector(".hero");
+  const fitur = document.getElementById("fitur");
+  const harga = document.getElementById("harga");
+  const cta = document.querySelector(".cta");
+  const akun = document.getElementById("akun");
+
+  if (hero) hero.style.display = sudahLogin ? "none" : "";
+  if (fitur) fitur.style.display = sudahLogin ? "none" : "";
+  if (harga) harga.style.display = sudahLogin ? "none" : "";
+  if (cta) cta.style.display = sudahLogin ? "none" : "";
+  if (akun) akun.style.display = sudahLogin ? "none" : "";
+
+  statusAkun.textContent = sudahLogin
+    ? "Login sebagai " + session.user.email
+    : "";
+}
+
+async function perbaruiStatusAkun() {
+  const { data } = await supabaseClient.auth.getSession();
+  aturTampilanAkun(data.session);
 }
 
 supabaseClient.auth.onAuthStateChange((event, session) => {
-const sudahLogin = Boolean(session);
-
-btnLogin.style.display = sudahLogin ? "none" : "block";
-btnDaftar.style.display = sudahLogin ? "none" : "block";
-btnLogout.style.display = sudahLogin ? "block" : "none";
-
-if (sudahLogin) {
-statusAkun.textContent =
-"Login sebagai " + session.user.email;
-}
+  aturTampilanAkun(session);
 });
 
 perbaruiStatusAkun();
