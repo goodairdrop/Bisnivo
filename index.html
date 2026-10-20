@@ -828,44 +828,73 @@ async function tampilkanPenjualan() {
   const totalElement = document.getElementById('totalPenjualan');
 
   daftar.textContent = 'Memuat data penjualan...';
+  totalElement.textContent = 'Total Penjualan: Rp0';
 
-  const { data, error } = await supabaseClient
-    .from('penjualan')
-    .select('id, nama_barang, harga, jumlah, total, created_at')
-    .order('created_at', { ascending: false });
+  try {
+    // Periksa akun yang sedang login
+    const { data: { user }, error: userError } =
+      await supabaseClient.auth.getUser();
 
-  if (error) {
-    daftar.textContent = 'Gagal memuat data: ' + error.message;
-    return;
+    if (userError || !user) {
+      daftar.textContent = 'Silakan login terlebih dahulu.';
+      return;
+    }
+
+    // Ambil data penjualan
+    // RLS Supabase harus membatasi data sesuai akun pengguna
+    const { data, error } = await supabaseClient
+      .from('penjualan')
+      .select('id, nama_barang, harga, jumlah, total, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      daftar.textContent =
+        'Gagal memuat data: ' + error.message;
+      return;
+    }
+
+    daftar.innerHTML = '';
+
+    let totalSemua = 0;
+
+    data.forEach(function(item) {
+      const harga = Number(item.harga);
+      const jumlah = Number(item.jumlah);
+
+      // Hitung dari harga dan jumlah agar tidak bergantung
+      // pada apakah kolom total terisi dengan benar
+      const totalItem = harga * jumlah;
+      totalSemua += totalItem;
+
+      const baris = document.createElement('div');
+      baris.style.padding = '10px';
+      baris.style.borderBottom = '1px solid #ddd';
+
+      const nama = document.createElement('strong');
+      nama.textContent = item.nama_barang;
+
+      const rincian = document.createElement('p');
+      rincian.textContent =
+        'Harga: Rp' + harga.toLocaleString('id-ID') +
+        ' × ' + jumlah +
+        ' | Total: Rp' + totalItem.toLocaleString('id-ID');
+
+      baris.append(nama, rincian);
+      daftar.appendChild(baris);
+    });
+
+    if (data.length === 0) {
+      daftar.textContent = 'Belum ada data penjualan.';
+    }
+
+    totalElement.textContent =
+      'Total Penjualan: Rp' +
+      totalSemua.toLocaleString('id-ID');
+
+  } catch (error) {
+    daftar.textContent =
+      'Terjadi kesalahan: ' + error.message;
   }
-
-  daftar.innerHTML = '';
-
-  let totalSemua = 0;
-
-  data.forEach(function(item) {
-    const totalItem = Number(item.total);
-    totalSemua += totalItem;
-
-    const baris = document.createElement('div');
-    baris.style.padding = '10px';
-    baris.style.borderBottom = '1px solid #ddd';
-
-    const nama = document.createElement('strong');
-    nama.textContent = item.nama_barang;
-
-    const rincian = document.createElement('p');
-    rincian.textContent =
-      'Harga: Rp' + Number(item.harga).toLocaleString('id-ID') +
-      ' × ' + item.jumlah +
-      ' | Total: Rp' + totalItem.toLocaleString('id-ID');
-
-    baris.append(nama, rincian);
-    daftar.appendChild(baris);
-  });
-
-  totalElement.textContent =
-    'Total Penjualan: Rp' + totalSemua.toLocaleString('id-ID');
 }
   
 </script>
