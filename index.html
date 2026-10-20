@@ -1,47 +1,532 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bisnivo - Kelola Bisnis Lebih Mudah</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f4f7fb;color:#17233c}
-header{background:#fff;padding:17px 6%;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 12px #17233c10}
-.logo{font-size:25px;font-weight:bold;color:#1765db}
-.logo span{color:#19a5a0}
-nav a{margin-left:20px;text-decoration:none;color:#34415a;font-size:14px}
-.hero{padding:65px 7%;background:linear-gradient(135deg,#e8f1ff,#f7fbff);display:flex;align-items:center;gap:35px;flex-wrap:wrap}
-.hero-text{flex:1;min-width:260px}
-.badge{display:inline-block;background:#dceaff;color:#1765db;padding:8px 13px;border-radius:20px;font-size:12px;font-weight:bold}
-h1{font-size:clamp(34px,5vw,52px);line-height:1.15;margin:22px 0;color:#14284c}
-h1 span{color:#1765db}
-.hero p{font-size:16px;line-height:1.8;color:#627089;margin-bottom:25px}
-.btn{display:inline-block;padding:13px 21px;background:#1765db;color:white;text-decoration:none;border-radius:9px;font-weight:bold;border:0;cursor:pointer}
-.btn-light{background:white;color:#1765db;border:1px solid #cbdaf2;margin-left:8px}
-.preview{flex:1;min-width:260px;background:white;padding:23px;border-radius:18px;box-shadow:0 15px 45px #173b7015}
-.preview h3{margin-bottom:20px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat{background:#f3f7ff;padding:18px;border-radius:12px}
-.stat small{color:#71809b}
-.stat strong{display:block;font-size:24px;margin-top:9px;color:#1765db}
-section.features{padding:55px 7%;text-align:center}
-.features h2{font-size:30px;margin-bottom:12px}
-.sub{color:#758198;line-height:1.7;margin-bottom:30px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;text-align:left}
-.card{background:white;padding:24px;border-radius:14px;border:1px solid #e8edf5}
-.icon{font-size:28px;margin-bottom:15px}
-.card h3{margin-bottom:10px}
-.card p{color:#71809b;line-height:1.7;font-size:14px}
-.price{background:#fff;padding:35px 20px;text-align:center}
-.price h2{margin-bottom:12px}
-.price strong{font-size:34px;color:#1765db}
-.price p{color:#71809b;margin:15px 0 22px}
-footer{padding:25px;text-align:center;background:#14284c;color:#dce7fa;font-size:13px}
-@media(max-width:600px){header{padding:16px 5%}nav a{margin-left:9px;font-size:12px}.hero{padding:45px 6%}.btn-light{margin:10px 0 0}.preview{min-width:100%}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Bisnivo - Kelola Bisnis Lebih Mudah</title>
+
+  <meta name="description" content="Bisnivo membantu UMKM mengelola penjualan, stok barang, karyawan, dan laporan usaha dalam satu tempat.">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f8ff;
+      color: #17233c;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #ffffff;
+      padding: 18px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      box-shadow: 0 2px 12px #17233c10;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: bold;
+      color: #1765db;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: #19a5a0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #34415a;
+      font-size: 14px;
+    }
+
+    .hero {
+      padding: 65px 7%;
+      background: linear-gradient(135deg, #e8f1ff, #f7fbff);
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .hero-text,
+    .preview {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #dceaff;
+      color: #1765db;
+      padding: 7px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 50px);
+      line-height: 1.18;
+      margin: 22px 0;
+      color: #14284c;
+    }
+
+    h1 span {
+      color: #1765db;
+    }
+
+    .hero-text p {
+      font-size: 16px;
+      color: #627089;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 20px;
+      background: #1765db;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 9px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-light {
+      background: #ffffff;
+      color: #1765db;
+      border: 1px solid #cbdaf2;
+      margin-left: 7px;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #71809b;
+      margin-top: 15px;
+    }
+
+    .preview {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 15px 45px #173b7015;
+    }
+
+    .preview h3 {
+      margin-bottom: 5px;
+    }
+
+    .preview-subtitle {
+      font-size: 12px;
+      color: #71809b;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat {
+      background: #f3f7ff;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    .stat small {
+      color: #71809b;
+      font-size: 12px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      margin-top: 8px;
+      color: #1765db;
+    }
+
+    .section {
+      padding: 60px 7%;
+      text-align: center;
+    }
+
+    .section h2 {
+      font-size: 29px;
+      margin-bottom: 10px;
+    }
+
+    .section-intro {
+      color: #71809b;
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      text-align: left;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 23px;
+      border-radius: 14px;
+      border: 1px solid #e8edf5;
+    }
+
+    .icon {
+      font-size: 29px;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: #71809b;
+      font-size: 14px;
+    }
+
+    .price-section {
+      padding: 55px 7%;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    .price-box {
+      max-width: 430px;
+      margin: 25px auto 0;
+      padding: 30px 22px;
+      border: 1px solid #dce7f8;
+      border-radius: 18px;
+      background: #f9fbff;
+    }
+
+    .price-box h3 {
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 36px;
+      color: #1765db;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .price-period {
+      color: #71809b;
+      font-size: 14px;
+    }
+
+    .price-box ul {
+      list-style: none;
+      text-align: left;
+      margin: 22px 0;
+    }
+
+    .price-box li {
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    .price-note {
+      font-size: 12px;
+      color: #71809b;
+      margin-top: 15px;
+    }
+
+    .cta {
+      padding: 55px 7%;
+      text-align: center;
+      background: #e8f1ff;
+    }
+
+    .cta p {
+      color: #627089;
+      margin: 12px 0 23px;
+    }
+
+    footer {
+      padding: 25px 6%;
+      text-align: center;
+      background: #14284c;
+      color: #dce7fa;
+      font-size: 13px;
+    }
+
+    footer p + p {
+      margin-top: 5px;
+    }
+
+    @media (max-width: 760px) {
+      header {
+        padding: 16px 5%;
+      }
+
+      nav {
+        gap: 10px;
+      }
+
+      nav a {
+        font-size: 12px;
+      }
+
+      .hero {
+        padding: 45px 6%;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .preview {
+        width: 100%;
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .btn-light {
+        margin: 10px 0 0;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .logo {
+        font-size: 23px;
+      }
+
+      nav {
+        gap: 8px;
+      }
+
+      nav a {
+        font-size: 11px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .section h2 {
+        font-size: 25px;
+      }
+
+      .hero {
+        padding-top: 35px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header>
-  <div class="logo">Bisni<span>vo</span></div>
- 
+
+  <header>
+    <div class="logo">Bisni<span>vo</span></div>
+
+    <nav>
+      <a href="#fitur">Fitur</a>
+      <a href="#harga">Harga</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <div class="hero-text">
+        <span class="badge">SOLUSI MANAJEMEN UMKM</span>
+
+        <h1>
+          Kelola Bisnis<br>
+          Lebih <span>Mudah.</span>
+        </h1>
+
+        <p>
+          Bisnivo membantu kamu mengelola penjualan,
+          stok barang, karyawan, dan laporan usaha
+          dalam satu tempat. Lebih praktis untuk
+          menjalankan bisnis setiap hari.
+        </p>
+
+        <a class="btn" href="#fitur">Kenali Fitur</a>
+        <a class="btn btn-light" href="#harga">Lihat Harga</a>
+
+        <p class="note">
+          Dibuat untuk membantu UMKM berkembang.
+        </p>
+      </div>
+
+      <div class="preview">
+        <h3>Ringkasan Bisnis</h3>
+
+        <p class="preview-subtitle">
+          Contoh tampilan dashboard Bisnivo
+        </p>
+
+        <div class="stats">
+          <div class="stat">
+            <small>Total Penjualan</small>
+            <strong>Rp0</strong>
+          </div>
+
+          <div class="stat">
+            <small>Produk</small>
+            <strong>0</strong>
+          </div>
+
+          <div class="stat">
+            <small>Transaksi</small>
+            <strong>0</strong>
+          </div>
+
+          <div class="stat">
+            <small>Karyawan</small>
+            <strong>0</strong>
+          </div>
+        </div>
+
+        <p class="note">
+          Ilustrasi dashboard, belum terhubung ke data bisnis.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="fitur">
+      <h2>Semua Lebih Teratur</h2>
+
+      <p class="section-intro">
+        Kenali fitur yang dirancang untuk membantu
+        operasional bisnis UMKM menjadi lebih mudah.
+      </p>
+
+      <div class="cards">
+
+        <article class="card">
+          <div class="icon">🛒</div>
+          <h3>Pencatatan Penjualan</h3>
+          <p>
+            Rencana fitur untuk mencatat transaksi
+            penjualan dan membantu memantau hasil usaha.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">📦</div>
+          <h3>Manajemen Stok</h3>
+          <p>
+            Rencana fitur untuk mencatat persediaan
+            barang dan memantau perubahan stok.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">👥</div>
+          <h3>Data Karyawan</h3>
+          <p>
+            Rencana fitur untuk mengelola informasi
+            karyawan dan pencatatan absensi.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">📊</div>
+          <h3>Laporan Usaha</h3>
+          <p>
+            Rencana laporan untuk membantu pemilik
+            memahami perkembangan bisnis.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">🔐</div>
+          <h3>Akun Bisnis</h3>
+          <p>
+            Dirancang agar setiap pengguna memiliki
+            ruang data bisnis yang terpisah.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">📱</div>
+          <h3>Mudah Digunakan</h3>
+          <p>
+            Tampilan dirancang agar nyaman digunakan
+            melalui ponsel maupun komputer.
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="price-section" id="harga">
+      <h2>Harga yang Terjangkau</h2>
+
+      <p class="section-intro">
+        Dirancang agar UMKM dapat memulai dengan biaya
+        berlangganan yang ringan.
+      </p>
+
+      <div class="price-box">
+        <h3>Paket Bisnivo</h3>
+
+        <div class="price">Rp10.000</div>
+
+        <p class="price-period">per 3 bulan</p>
+
+        <ul>
+          <li>✓ Direncanakan untuk pencatatan penjualan</li>
+          <li>✓ Direncanakan untuk pengelolaan stok</li>
+          <li>✓ Direncanakan untuk data karyawan</li>
+          <li>✓ Direncanakan untuk laporan usaha</li>
+        </ul>
+
+        <p class="note">
+          Harga dan layanan akan diberlakukan setelah
+          sistem berlangganan tersedia.
+        </p>
+      </div>
+    </section>
+
+    <section class="cta">
+      <h2>Bangun Bisnis Lebih Teratur</h2>
+
+      <p>
+        Bisnivo sedang dikembangkan untuk mendukung
+        kebutuhan pengelolaan bisnis UMKM.
+      </p>
+
+      <a class="btn" href="#fitur">Jelajahi Bisnivo</a>
+    </section>
+
+  </main>
+
+  <footer>
+    <p><strong>Bisnivo</strong> — Solusi Manajemen Bisnis UMKM</p>
+    <p>© 2026 Bisnivo. Semua hak dilindungi.</p>
+  </footer>
+
+</body>
+</html>
