@@ -700,8 +700,17 @@ async function perbaruiStatusAkun() {
   }
 }
 
-supabaseClient.auth.onAuthStateChange(() => {
-  perbaruiStatusAkun();
+supabaseClient.auth.onAuthStateChange((event, session) => {
+const sudahLogin = Boolean(session);
+
+btnLogin.style.display = sudahLogin ? "none" : "block";
+btnDaftar.style.display = sudahLogin ? "none" : "block";
+btnLogout.style.display = sudahLogin ? "block" : "none";
+
+if (sudahLogin) {
+statusAkun.textContent =
+"Login sebagai " + session.user.email;
+}
 });
 
 perbaruiStatusAkun();
