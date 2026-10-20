@@ -585,7 +585,7 @@
     </p>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;">
-      <button class="btn" onclick="alert('Fitur penjualan akan dibuat berikutnya.')">🛒 Penjualan</button>
+      <button class="btn" onclick="bukaPenjualan()">🛒 Penjualan</button>
       <button class="btn" onclick="alert('Fitur stok akan dibuat berikutnya.')">📦 Stok Barang</button>
       <button class="btn" onclick="alert('Fitur karyawan akan dibuat berikutnya.')">👥 Karyawan</button>
       <button class="btn" onclick="alert('Fitur laporan akan dibuat berikutnya.')">📊 Laporan</button>
@@ -749,6 +749,86 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
 
 perbaruiStatusAkun();
 console.log("Bisnivo: Supabase siap digunakan.");
+</script>
+  <div id="halamanPenjualan" style="display:none; padding:20px;">
+  <h2>🛒 Penjualan</h2>
+
+  <label>Nama Barang</label>
+  <input type="text" id="namaBarang" placeholder="Masukkan nama barang"
+    style="width:100%; padding:10px; margin:8px 0;">
+
+  <label>Harga Barang (Rp)</label>
+  <input type="number" id="hargaBarang" placeholder="Masukkan harga"
+    style="width:100%; padding:10px; margin:8px 0;">
+
+  <label>Jumlah</label>
+  <input type="number" id="jumlahBarang" value="1" min="1"
+    style="width:100%; padding:10px; margin:8px 0;">
+
+  <button class="btn" onclick="simpanPenjualan()">Simpan Penjualan</button>
+  <button class="btn" onclick="tutupPenjualan()">Kembali</button>
+
+  <h3>Daftar Penjualan</h3>
+  <h3 id="totalPenjualan">Total Penjualan: Rp0</h3>
+  <div id="daftarPenjualan"></div>
+</div>
+
+<script>
+let transaksiPenjualan = [];
+
+function bukaPenjualan() {
+  document.getElementById('halamanPenjualan').style.display = 'block';
+  tampilkanPenjualan();
+}
+
+function tutupPenjualan() {
+  document.getElementById('halamanPenjualan').style.display = 'none';
+}
+
+function simpanPenjualan() {
+  const nama = document.getElementById('namaBarang').value.trim();
+  const harga = Number(document.getElementById('hargaBarang').value);
+  const jumlah = Number(document.getElementById('jumlahBarang').value);
+
+  if (!nama || harga <= 0 || jumlah <= 0) {
+    alert('Mohon isi nama barang, harga, dan jumlah dengan benar.');
+    return;
+  }
+
+  transaksiPenjualan.push({
+    nama: nama,
+    harga: harga,
+    jumlah: jumlah,
+    total: harga * jumlah
+  });
+
+  document.getElementById('namaBarang').value = '';
+  document.getElementById('hargaBarang').value = '';
+  document.getElementById('jumlahBarang').value = '1';
+
+  tampilkanPenjualan();
+  alert('Penjualan berhasil dicatat!');
+}
+
+function tampilkanPenjualan() {
+  const daftar = document.getElementById('daftarPenjualan');
+  const total = transaksiPenjualan.reduce((sum, item) => sum + item.total, 0);
+
+  document.getElementById('totalPenjualan').textContent =
+    'Total Penjualan: Rp' + total.toLocaleString('id-ID');
+
+  daftar.innerHTML = '';
+
+  transaksiPenjualan.forEach(function(item, index) {
+    daftar.innerHTML +=
+      '<div style="padding:10px; border-bottom:1px solid #ddd;">' +
+      '<strong>' + item.nama + '</strong><br>' +
+      'Harga: Rp' + item.harga.toLocaleString('id-ID') +
+      ' × ' + item.jumlah +
+      '<br>Total: Rp' + item.total.toLocaleString('id-ID') +
+      '</div>';
+  });
+}
 </script>
 </body>
 </html>
