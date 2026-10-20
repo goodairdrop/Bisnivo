@@ -867,24 +867,7 @@ async function tampilkanPenjualan() {
   totalElement.textContent =
     'Total Penjualan: Rp' + totalSemua.toLocaleString('id-ID');
 }
-  const daftar = document.getElementById('daftarPenjualan');
-  const total = transaksiPenjualan.reduce((sum, item) => sum + item.total, 0);
-
-  document.getElementById('totalPenjualan').textContent =
-    'Total Penjualan: Rp' + total.toLocaleString('id-ID');
-
-  daftar.innerHTML = '';
-
-  transaksiPenjualan.forEach(function(item, index) {
-    daftar.innerHTML +=
-      '<div style="padding:10px; border-bottom:1px solid #ddd;">' +
-      '<strong>' + item.nama + '</strong><br>' +
-      'Harga: Rp' + item.harga.toLocaleString('id-ID') +
-      ' × ' + item.jumlah +
-      '<br>Total: Rp' + item.total.toLocaleString('id-ID') +
-      '</div>';
-  });
-}
+  
 </script>
 </body>
 </html>
