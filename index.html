@@ -594,7 +594,117 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+// Elemen akun Bisnivo
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const statusAkun = document.getElementById("statusAkun");
 
+const btnLogin = document.getElementById("btnLogin");
+const btnDaftar = document.getElementById("btnDaftar");
+const btnLogout = document.getElementById("btnLogout");
+
+// Pendaftaran akun baru
+btnDaftar.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    statusAkun.textContent = "Masukkan email dan kata sandi.";
+    return;
+  }
+
+  if (password.length < 6) {
+    statusAkun.textContent =
+      "Kata sandi minimal 6 karakter.";
+    return;
+  }
+
+  btnDaftar.disabled = true;
+  statusAkun.textContent = "Memproses pendaftaran...";
+
+  try {
+    const { data, error } =
+      await supabaseClient.auth.signUp({
+        email,
+        password
+      });
+
+    if (error) throw error;
+
+    statusAkun.textContent = data.session
+      ? "Pendaftaran berhasil! Kamu sudah masuk."
+      : "Pendaftaran berhasil. Periksa email untuk verifikasi akun.";
+
+  } catch (error) {
+    statusAkun.textContent =
+      "Pendaftaran gagal: " + error.message;
+  } finally {
+    btnDaftar.disabled = false;
+  }
+});
+
+// Login
+btnLogin.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    statusAkun.textContent =
+      "Masukkan email dan kata sandi.";
+    return;
+  }
+
+  btnLogin.disabled = true;
+  statusAkun.textContent = "Sedang masuk...";
+
+  try {
+    const { error } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    if (error) throw error;
+
+    statusAkun.textContent = "Login berhasil!";
+
+  } catch (error) {
+    statusAkun.textContent =
+      "Login gagal: " + error.message;
+  } finally {
+    btnLogin.disabled = false;
+  }
+});
+
+// Logout
+btnLogout.addEventListener("click", async () => {
+  const { error } = await supabaseClient.auth.signOut();
+
+  statusAkun.textContent = error
+    ? "Gagal keluar: " + error.message
+    : "Kamu berhasil keluar dari akun.";
+});
+
+// Perbarui tampilan berdasarkan status login
+async function perbaruiStatusAkun() {
+  const { data } = await supabaseClient.auth.getSession();
+  const sudahLogin = Boolean(data.session);
+
+  btnLogin.style.display = sudahLogin ? "none" : "block";
+  btnDaftar.style.display = sudahLogin ? "none" : "block";
+  btnLogout.style.display = sudahLogin ? "block" : "none";
+
+  if (sudahLogin) {
+    statusAkun.textContent =
+      "Login sebagai " + data.session.user.email;
+  }
+}
+
+supabaseClient.auth.onAuthStateChange(() => {
+  perbaruiStatusAkun();
+});
+
+perbaruiStatusAkun();
 console.log("Bisnivo: Supabase siap digunakan.");
 </script>
 </body>
