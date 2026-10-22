@@ -772,6 +772,64 @@ console.log("Bisnivo: Supabase siap digunakan.");
   <h3 id="totalPenjualan">Total Penjualan: Rp0</h3>
   <div id="daftarPenjualan"></div>
 </div>
+  <!-- HALAMAN STOK BARANG -->
+<div id="halamanStok" style="display:none;padding:20px;background:#f5f8ff;min-height:70vh;">
+
+  <h2 style="color:#1765db;margin-bottom:8px;">📦 Stok Barang</h2>
+
+  <p style="color:#71809b;margin-bottom:20px;">
+    Kelola persediaan barang, harga modal, dan harga jual.
+  </p>
+
+  <div style="background:white;padding:18px;border-radius:12px;margin-bottom:20px;">
+
+    <h3 style="margin-bottom:15px;">Tambah Barang</h3>
+
+    <label>Nama Barang</label>
+    <input id="stokNama" type="text" placeholder="Contoh: Kopi"
+      style="width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ddd;border-radius:8px;">
+
+    <label>Kode Barang (opsional)</label>
+    <input id="stokKode" type="text" placeholder="Contoh: BRG001"
+      style="width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ddd;border-radius:8px;">
+
+    <label>Harga Modal (Rp)</label>
+    <input id="stokModal" type="number" min="0" step="1" placeholder="Contoh: 5000"
+      style="width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ddd;border-radius:8px;">
+
+    <label>Harga Jual (Rp)</label>
+    <input id="stokJual" type="number" min="0" step="1" placeholder="Contoh: 8000"
+      style="width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ddd;border-radius:8px;">
+
+    <label>Stok Awal</label>
+    <input id="stokJumlah" type="number" min="0" step="1" value="0"
+      style="width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ddd;border-radius:8px;">
+
+    <label>Peringatan jika stok tersisa</label>
+    <input id="stokMinimum" type="number" min="0" step="1" value="5"
+      style="width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ddd;border-radius:8px;">
+
+    <button class="btn" onclick="simpanBarang()" style="width:100%;">
+      Simpan Barang
+    </button>
+
+    <p id="statusStok" role="status" style="margin-top:12px;overflow-wrap:anywhere;"></p>
+
+  </div>
+
+  <div style="background:white;padding:18px;border-radius:12px;">
+
+    <h3 style="margin-bottom:15px;">Daftar Barang</h3>
+
+    <div id="daftarStok">Belum memuat data barang.</div>
+
+  </div>
+
+  <button class="btn" onclick="tutupStok()" style="margin-top:18px;">
+    Kembali ke Dashboard
+  </button>
+
+</div>
 
 <script>
 async function bukaPenjualan() {
