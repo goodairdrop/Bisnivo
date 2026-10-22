@@ -586,7 +586,7 @@
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;">
       <button class="btn" onclick="bukaPenjualan()">🛒 Penjualan</button>
-      <button class="btn" onclick="alert('Fitur stok akan dibuat berikutnya.')">📦 Stok Barang</button>
+      <button class="btn" onclick="bukaStok()">📦 Stok Barang</button>
       <button class="btn" onclick="alert('Fitur karyawan akan dibuat berikutnya.')">👥 Karyawan</button>
       <button class="btn" onclick="alert('Fitur laporan akan dibuat berikutnya.')">📊 Laporan</button>
     </div>
@@ -840,7 +840,19 @@ async function bukaPenjualan() {
 function tutupPenjualan() {
   document.getElementById('halamanPenjualan').style.display = 'none';
 }
+// Membuka halaman Stok Barang
+async function bukaStok() {
+  document.getElementById('halamanPenjualan').style.display = 'none';
+  document.getElementById('halamanStok').style.display = 'block';
 
+  await tampilkanStok();
+}
+
+// Kembali ke Dashboard dari halaman Stok Barang
+function tutupStok() {
+  document.getElementById('halamanStok').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+}
 async function simpanPenjualan() {
   const nama = document.getElementById('namaBarang').value.trim();
   const harga = Number(document.getElementById('hargaBarang').value);
@@ -954,7 +966,164 @@ async function tampilkanPenjualan() {
       'Terjadi kesalahan: ' + error.message;
   }
 }
-  
+  // Menyimpan barang baru ke Supabase
+async function simpanBarang() {
+  const nama = document.getElementById('stokNama').value.trim();
+  const kode = document.getElementById('stokKode').value.trim();
+  const modal = Number(document.getElementById('stokModal').value);
+  const jual = Number(document.getElementById('stokJual').value);
+  const stokInput = document.getElementById('stokJumlah').value;
+  const minimumInput = document.getElementById('stokMinimum').value;
+  const status = document.getElementById('statusStok');
+
+  if (!nama) {
+    status.textContent = 'Nama barang wajib diisi.';
+    return;
+  }
+
+  if (
+    document.getElementById('stokModal').value === '' ||
+    document.getElementById('stokJual').value === '' ||
+    stokInput === '' ||
+    minimumInput === ''
+  ) {
+    status.textContent = 'Mohon lengkapi semua kolom angka.';
+    return;
+  }
+
+  const stok = Number(stokInput);
+  const minimum = Number(minimumInput);
+
+  if (
+    !Number.isFinite(modal) ||
+    !Number.isFinite(jual) ||
+    !Number.isInteger(stok) ||
+    !Number.isInteger(minimum) ||
+    modal < 0 ||
+    jual < 0 ||
+    stok < 0 ||
+    minimum < 0
+  ) {
+    status.textContent = 'Harga dan stok tidak boleh bernilai negatif. Jumlah stok harus bilangan bulat.';
+    return;
+  }
+
+  const { data: { user }, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !user) {
+    status.textContent = 'Silakan login terlebih dahulu.';
+    return;
+  }
+
+  status.textContent = 'Menyimpan barang...';
+
+  const { error } = await supabaseClient
+    .from('barang')
+    .insert([{
+      user_id: user.id,
+      nama_barang: nama,
+      kode_barang: kode || null,
+      harga_modal: modal,
+      harga_jual: jual,
+      stok: stok,
+      batas_stok_minimum: minimum
+    }]);
+
+  if (error) {
+    status.textContent = 'Gagal menyimpan: ' + error.message;
+    return;
+  }
+
+  document.getElementById('stokNama').value = '';
+  document.getElementById('stokKode').value = '';
+  document.getElementById('stokModal').value = '';
+  document.getElementById('stokJual').value = '';
+  document.getElementById('stokJumlah').value = '0';
+  document.getElementById('stokMinimum').value = '5';
+
+  status.textContent = 'Barang berhasil disimpan!';
+
+  await tampilkanStok();
+}
+
+
+// Menampilkan daftar barang dari Supabase
+async function tampilkanStok() {
+  const daftar = document.getElementById('daftarStok');
+
+  daftar.textContent = 'Memuat data barang...';
+
+  const { data: { user }, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !user) {
+    daftar.textContent = 'Silakan login terlebih dahulu.';
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from('barang')
+    .select('id, nama_barang, kode_barang, harga_modal, harga_jual, stok, batas_stok_minimum')
+    .order('nama_barang', { ascending: true });
+
+  if (error) {
+    daftar.textContent = 'Gagal memuat barang: ' + error.message;
+    return;
+  }
+
+  daftar.replaceChildren();
+
+  if (!data || data.length === 0) {
+    daftar.textContent = 'Belum ada barang. Silakan tambahkan barang pertama.';
+    return;
+  }
+
+  data.forEach(function(item) {
+    const kartu = document.createElement('div');
+
+    kartu.style.cssText =
+      'padding:14px;margin-bottom:12px;border:1px solid #e5eaf2;border-radius:10px;';
+
+    const nama = document.createElement('h3');
+    nama.textContent = item.nama_barang;
+
+    const kode = document.createElement('p');
+    kode.textContent = 'Kode: ' + (item.kode_barang || '-');
+
+    const modal = document.createElement('p');
+    modal.textContent =
+      'Harga modal: Rp' +
+      Number(item.harga_modal).toLocaleString('id-ID');
+
+    const jual = document.createElement('p');
+    jual.textContent =
+      'Harga jual: Rp' +
+      Number(item.harga_jual).toLocaleString('id-ID');
+
+    const keuntungan = document.createElement('p');
+    keuntungan.textContent =
+      'Selisih harga: Rp' +
+      (Number(item.harga_jual) - Number(item.harga_modal))
+        .toLocaleString('id-ID');
+
+    const stok = document.createElement('p');
+    stok.textContent = 'Stok tersedia: ' + item.stok;
+
+    if (Number(item.stok) === 0) {
+      stok.style.color = '#dc2626';
+      stok.style.fontWeight = 'bold';
+      stok.textContent += ' — STOK HABIS';
+    } else if (Number(item.stok) <= Number(item.batas_stok_minimum)) {
+      stok.style.color = '#d97706';
+      stok.style.fontWeight = 'bold';
+      stok.textContent += ' — STOK MENIPIS';
+    }
+
+    kartu.append(nama, kode, modal, jual, keuntungan, stok);
+    daftar.appendChild(kartu);
+  });
+}
 </script>
 </body>
 </html>
